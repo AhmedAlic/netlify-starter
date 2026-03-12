@@ -2,7 +2,7 @@
 import tailwindcss from "@tailwindcss/vite";
 
 export default defineNuxtConfig({
-  devtools: { enabled: true },
+  devtools: { enabled: false },
   css: ["~/assets/css/main.css"],
   vite: {
     plugins: [
@@ -10,6 +10,6 @@ export default defineNuxtConfig({
     ],
   },
   experimental: { appManifest: false },
-  modules: ["@nuxt/icon", "@nuxt/image"],
+  modules: ["@nuxt/icon"],
   compatibilityDate: "2024-12-18",
 });

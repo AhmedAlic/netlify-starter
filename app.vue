@@ -1,17 +1,13 @@
 <script setup>
 useHead({
-  htmlAttrs: { lang: "en-US" },
-  title: "Nuxt Starter",
+  htmlAttrs: { lang: "bs" },
+  title: "Godišnjica",
   meta: [
     {
-      name: "description",
-      content:
-        "Nuxt Starter is a minimal template created for quick landing pages, built with Nuxt and Tailwind CSS.",
+      name: "viewport",
+      content: "width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0",
     },
   ],
-  bodyAttrs: {
-    class: 'font-display'
-  }
 });
 </script>
 

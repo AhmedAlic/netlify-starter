@@ -1,5 +1,173 @@
 @import "tailwindcss";
 
+html, body {
+  overscroll-behavior: none;
+  -webkit-overflow-scrolling: touch;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+}
+
 @theme {
-  --font-display: "Helvetica", "sans-serif";
+  --animate-bounce-run: bounce-run 0.35s ease-in-out infinite;
+  --animate-slide-in: slide-in 0.5s ease-out forwards;
+  --animate-shake: shake 0.4s ease-in-out;
+  --animate-fade-in: fade-in 0.6s ease-out forwards;
+  --animate-float: float 3s ease-in-out infinite;
+  --animate-cloud-drift: cloud-drift 25s linear infinite;
+  --animate-cloud-drift-slow: cloud-drift 40s linear infinite;
+  --animate-crumble: crumble 0.6s ease-in forwards;
+  --animate-pulse-glow: pulse-glow 2s ease-in-out infinite;
+  --animate-hop: hop 0.4s ease-out;
+  --animate-heart-crack: heart-crack 0.8s ease-in-out forwards;
+  --animate-heart-reassemble: heart-reassemble 1.2s ease-out forwards;
+  --animate-pop: pop 0.4s ease-out;
+  --animate-cat-fall: cat-fall 3s linear forwards;
+  --animate-starry-fade: starry-fade 6s ease-in-out forwards;
+  --animate-twinkle: twinkle 2s ease-in-out infinite;
+  --animate-music-float: music-float 4s ease-out forwards;
+}
+
+/* Azra running bounce */
+@keyframes bounce-run {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-14px) rotate(-3deg); }
+  50% { transform: translateY(-18px) rotate(0deg); }
+  75% { transform: translateY(-8px) rotate(3deg); }
+}
+
+/* UI elements slide in */
+@keyframes slide-in {
+  from { opacity: 0; transform: translateY(30px) scale(0.9); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Wrong answer shake */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-8px); }
+  40% { transform: translateX(8px); }
+  60% { transform: translateX(-5px); }
+  80% { transform: translateX(5px); }
+}
+
+/* General fade in */
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Cat / Ahmed floating idle */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+/* Parallax cloud drift */
+@keyframes cloud-drift {
+  from { transform: translateX(100vw); }
+  to { transform: translateX(-200px); }
+}
+
+/* Obstacle crumbles away */
+@keyframes crumble {
+  0% { transform: scale(1) rotate(0deg); opacity: 1; }
+  40% { transform: scale(1.1) rotate(3deg); opacity: 0.8; }
+  100% { transform: scale(0) rotate(20deg) translateY(40px); opacity: 0; }
+}
+
+/* Glow pulse for start button */
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 10px rgba(236, 72, 153, 0.3); }
+  50% { box-shadow: 0 0 30px rgba(236, 72, 153, 0.6), 0 0 60px rgba(236, 72, 153, 0.2); }
+}
+
+/* Small hop for correct answer */
+@keyframes hop {
+  0% { transform: translateY(0); }
+  40% { transform: translateY(-30px); }
+  100% { transform: translateY(0); }
+}
+
+/* Bird wing flap */
+@keyframes wing-flap {
+  0%, 100% { transform: scaleX(1); }
+  50% { transform: scaleX(-1); }
+}
+
+/* Ground repeating texture */
+.ground-pattern {
+  background: repeating-linear-gradient(
+    90deg,
+    #4ade80 0px,
+    #22c55e 2px,
+    #4ade80 4px
+  );
+}
+
+/* Waving hand on start screen */
+@keyframes wave {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(20deg); }
+  75% { transform: rotate(-15deg); }
+}
+
+/* ── Easter Egg Animations ── */
+
+/* Heart crack on wrong guesses */
+@keyframes heart-crack {
+  0% { transform: scale(1); }
+  20% { transform: scale(1.15); }
+  40% { transform: scale(0.9) rotate(3deg); filter: brightness(0.7); }
+  60% { transform: scale(1.05) rotate(-2deg); }
+  80% { transform: scale(0.95) rotate(1deg); filter: brightness(0.5); }
+  100% { transform: scale(1) rotate(0); filter: brightness(1); }
+}
+
+/* Heart reassembles after breaking */
+@keyframes heart-reassemble {
+  0% { transform: scale(0.3) rotate(15deg); opacity: 0.2; filter: grayscale(1); }
+  40% { transform: scale(1.2) rotate(-5deg); opacity: 0.8; filter: grayscale(0.3); }
+  70% { transform: scale(0.95) rotate(2deg); opacity: 1; filter: grayscale(0); }
+  100% { transform: scale(1) rotate(0); opacity: 1; filter: grayscale(0); }
+}
+
+/* Letter pop-in on correct guess */
+@keyframes pop {
+  0% { transform: scale(0); opacity: 0; }
+  60% { transform: scale(1.4); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* Cat emojis falling from sky */
+@keyframes cat-fall {
+  0% { transform: translateY(-60px) rotate(0deg); opacity: 1; }
+  80% { opacity: 1; }
+  100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+}
+
+/* Starry night fade in and out */
+@keyframes starry-fade {
+  0% { opacity: 0; }
+  15% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* Twinkling stars */
+@keyframes twinkle {
+  0%, 100% { opacity: 0.3; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+
+/* Musical notes floating up */
+@keyframes music-float {
+  0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+  50% { opacity: 0.8; }
+  100% { transform: translateY(-200px) rotate(20deg); opacity: 0; }
+}
+
+/* Heart shape via clip-path */
+.heart-shape {
+  clip-path: path('M 50 90 C 25 70, 0 50, 0 30 C 0 10, 20 0, 35 0 C 45 0, 50 10, 50 20 C 50 10, 55 0, 65 0 C 80 0, 100 10, 100 30 C 100 50, 75 70, 50 90 Z');
 }

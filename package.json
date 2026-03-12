@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@nuxt/image": "^2.0.0",
-    "@tailwindcss/vite": "^4.0.16"
+    "@tailwindcss/vite": "^4.0.16",
+    "canvas-confetti": "^1.9.4"
   }
 }
