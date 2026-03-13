@@ -4,7 +4,19 @@ import confetti from 'canvas-confetti'
 
 // ── Game data ──────────────────────────────────────────────
 const steps = [
+  // 1 — NEW quiz
   {
+    type: 'quiz',
+    question: 'Kako ti se Ahmed javio, šta ti je napisao?',
+    options: ['Heej, kako si?', '"Pomirišite mi kosu" poza', 'Mmm macko jesi dobra', 'Znamol se?'],
+    correctIndex: 1,
+    message: 'Sreća pa imamo screenshot kao dokaz 😂💇‍♂️',
+    wrongMessage: 'Hahaha nee, sjeti se te legendarne poruke... 😂',
+    imagePath: '/img/poruka.jpg',
+  },
+  // 2 — OLD Q1
+  {
+    type: 'quiz',
     question: 'Gdje si prvi put popila kafu sa Ahmedom?',
     options: ['Caffee Trezor', 'Verdi', 'Gato', 'Arhiva'],
     correctIndex: 0,
@@ -12,7 +24,18 @@ const steps = [
     wrongMessage: 'Hajde, sjeti se... onaj parking, onaj poljubac... ☕',
     imagePath: '/img/mi.jpg',
   },
+  // 3 — CHOICE: Najsmješnija scena
   {
+    type: 'choice',
+    question: 'Koja vam je najsmješnija zajednička scena?',
+    options: ['Kikiriki umjesto kikiri', 'Scena pred spavanje na Zlatiboru 🏔️', 'Gartic phone crteži 🎨', 'Adam i njegovo: Sir Ahmed'],
+    message: 'Sve su scene jake, ali Ahmedu je scena na Zlatiboru havarija 😂',
+    imagePath: '/img/zlatibor.jpg',
+    funnyScene: true,
+  },
+  // 4 — OLD Q2
+  {
+    type: 'quiz',
     question: 'Koja fudbalska ekipa su najveći luzeri?',
     options: ['Manchester United', 'Liverpool', 'Arsenal', 'Barcelona'],
     correctIndex: 1,
@@ -20,7 +43,17 @@ const steps = [
     wrongMessage: 'Ma kakvi su to luzeri... znamo mi koji su pravi luzeri ! 😤',
     imagePath: '/img/luzeri.jpg',
   },
+  // 5 — CHOICE: Najbolji koncert
   {
+    type: 'choice',
+    question: 'Koji vam je bio najbolji koncert zajedno?',
+    options: ['Bajaga 🎸', 'Halid B🎤', 'Maid H🎵', 'Mirza S 🎶', 'Grše 🔥', 'Neko drugi? 🤔'],
+    message: 'Svi su bili posebni, ali Mirza je pokidao 🎵',
+    imagePath: '/img/mirza.jpg',
+  },
+  // 6 — OLD Q3
+  {
+    type: 'quiz',
     question: 'Koji je prvi zajednički film koji ste odgledali do kraja u stanu..?',
     options: ['Shawshank Redemption', 'Meet The Millers', 'Hangover', 'Fantastic Four'],
     correctIndex: 0,
@@ -28,15 +61,37 @@ const steps = [
     wrongMessage: 'Nee, sjeti se one noći na kauču... 🎬',
     imagePath: '/img/shawshank.jpg',
   },
+  // 7 — OLD Q4
   {
+    type: 'quiz',
     question: 'Koje je Ahmedovo omiljeno jelo?',
     options: ['Pizza', 'Pljeska', 'Döner', 'Ćevapi'],
     correctIndex: 1,
-    message: 'PLJESKA! Jedina stvar koju volim skoro koliko i tebe. Ključna riječ: SKORO. Ti si ipak ispred. 🍔❤️ (jedini AI generisani odgovor hehe)',
+    message: 'PLJESKA! Jedina stvar koju volim skoro koliko i tebe. Ključna riječ: SKORO. Ti si ipak ispred. 🍔❤️',
     wrongMessage: 'Ma jok... razmisli bolje, znaš ti mene! 🍔',
     imagePath: '/img/pljeska.jpg',
   },
+  // 8 — NEW quiz: gaming
   {
+    type: 'quiz',
+    question: 'Koja je Ahmedova najdraža igrica?',
+    options: ['GTA', 'Fifa', 'Call of Duty', 'Minecraft'],
+    correctIndex: 1,
+    message: 'FIFA! Jedina igrica gdje Ahmed misli da je profesionalac... 🎮😂',
+    wrongMessage: 'Nee, razmisli... koja igrica mu nikad ne dosadi? 🎮',
+    imagePath: '/img/fifa.jpg',
+  },
+  // 9 — CHOICE: Destinacija
+  {
+    type: 'choice',
+    question: 'Koja je vaša dream destinacija za posjetiti?',
+    options: ['Barcelona 🇪🇸', 'Milano 🇮🇹', 'Manchester 🏴󠁧󠁢󠁥󠁮󠁧󠁿', 'New York 🇺🇸', 'Maldivi 🏝️', 'Neka druga? 🌍'],
+    message: 'Nije bitno gdje, bitno je s kim! Ali... Manchester je moj san 🇬🇧👺',
+    imagePath: '/img/manco.jpg',
+  },
+  // 10 — OLD Q5
+  {
+    type: 'quiz',
     question: 'Vaše najbolje zajedničko putovanje je bilo u...?',
     options: ['Istanbul', 'Beč', 'Budimpešta', 'Zlatibor'],
     correctIndex: 0,
@@ -47,8 +102,8 @@ const steps = [
 ]
 
 // ── World layout ───────────────────────────────────────────
-const WORLD_WIDTH = 4100
-const OBSTACLE_SPACING = 620
+const WORLD_WIDTH = 5800
+const OBSTACLE_SPACING = 480
 const FIRST_OBSTACLE = 520
 const AHMED_POS = FIRST_OBSTACLE + OBSTACLE_SPACING * steps.length + 100
 const AZRA_HALF = 24
@@ -62,7 +117,8 @@ const MAX_X = WORLD_WIDTH - 40
 const obstaclePositions = steps.map((_, i) => FIRST_OBSTACLE + OBSTACLE_SPACING * i)
 
 // ── State ──────────────────────────────────────────────────
-const gameState = ref('START') // START | PLAYING | DIALOGUE_AZRA | DIALOGUE_BIRD | QUIZ | MEMORY | PRE_FINAL | FINAL | WORD_PUZZLE | WORD_PUZZLE_WIN
+const gameState = ref('START') // START | PLAYING | DIALOGUE_AZRA | DIALOGUE_BIRD | QUIZ | CHOICE | MEMORY | PRE_FINAL | FINAL | WORD_PUZZLE | WORD_PUZZLE_WIN
+const choiceResponse = ref(null) // stores chosen option text for choice steps
 const currentCheckpoint = ref(0)
 const azraX = ref(80)
 const cameraX = ref(0)
@@ -140,16 +196,26 @@ const currentParrot = computed(() => currentCheckpoint.value % 2 === 0 ? 'Čombe
 const azraDialogues = [
   'Šta se dešava? Zašto ne mogu proći?! 😟',
   'Opet neko blokira put! Šta sad?! 😤',
+  'Hmm, šta je ovo sada? 🤨',
   'Ma daj... ko je sad tu?! 🙄',
+  'Evo opet nečega... 😅',
   'Još jedna prepreka?! Ahmede, gdje si? 😩',
+  'Koliko dugo je još ovaj put?! 😤',
+  'Opet?! Daj nemoj me zezat! 😫',
+  'Uf, šta je sad? 🙄',
   'OPET?! Koliko još ovih ima?! 😭',
 ]
 
 const parrotDialogues = [
   'Ćiriu ćiriu! Ako želiš proći, moraš odgovoriti na ovo pitanje!',
   'Hej hej! Nema prolaza bez tačnog odgovora!',
+  'Ovaj put bez kviza — ali reci nam šta misliš! 🦜',
   'Opet ja! Odgovori tačno pa ćeš proći!',
+  'Hajde, kaži nam šta ti misliš! Nema pogrešnog odgovora! 🎶',
+  'Još malo! Ali prvo — jedno pitanjce!',
   'Skoro si gotova! Ali prvo — jedno pitanjce!',
+  'Opet ja! Odgovori tačno pa ćeš proći! 🎮',
+  'Zadnji izbor, obećavam! Kaži šta misliš! 🌍',
   'Zadnji put, obećavam! Ali moraš znati odgovor!',
 ]
 
@@ -296,7 +362,7 @@ function resetIdleTimer() {
         showIdleHint.value = false
         resetIdleTimer()
       }, 3000)
-    }, 30000)
+    }, 10000)
   }
 }
 
@@ -312,6 +378,7 @@ function startGame() {
   showParrotBubble.value = false
   parrotIntroShown.čombe = false
   parrotIntroShown.lili = false
+  choiceResponse.value = null
   updateCamera()
   showIntroPopup.value = true
   gameState.value = 'INTRO_POPUP'
@@ -335,6 +402,12 @@ function selectAnswer(index) {
     setTimeout(() => { wrongIndex.value = -1 }, 500)
     setTimeout(() => { wrongPopup.value = false }, 2500)
   }
+}
+
+function selectChoice(index) {
+  choiceResponse.value = step.value.options[index]
+  clearedObstacles.value.push(currentCheckpoint.value)
+  gameState.value = 'MEMORY'
 }
 
 function startDialogueSequence(obstacleIdx) {
@@ -392,11 +465,11 @@ function advanceDialogue() {
       showParrotBubble.value = false
       nextTick(() => { showParrotBubble.value = true })
     } else {
-      // Dismiss parrots, show quiz
+      // Dismiss parrots, show quiz or choice
       showParrotBubble.value = false
       parrotVisible.value = false
       parrot2Visible.value = false
-      gameState.value = 'QUIZ'
+      gameState.value = step.value.type === 'choice' ? 'CHOICE' : 'QUIZ'
     }
   }
 }
@@ -449,6 +522,7 @@ function restart() {
   showParrotBubble.value = false
   parrotIntroShown.čombe = false
   parrotIntroShown.lili = false
+  choiceResponse.value = null
 }
 
 function advanceToFinal() {
@@ -601,7 +675,7 @@ onUnmounted(() => {
       <div class="absolute bottom-8 w-full h-12" style="background: linear-gradient(0deg, #a16207 0%, #ca8a04 50%, #eab308 100%); opacity: 0.5;"></div>
 
       <!-- Flowers -->
-      <template v-for="n in 20" :key="'flower-'+n">
+      <template v-for="n in 30" :key="'flower-'+n">
         <div
           class="absolute text-xl pointer-events-none"
           :style="{ bottom: (100 + (n * 7) % 30) + 'px', left: (n * 155 + (n * 37) % 80) + 'px' }"
@@ -609,7 +683,7 @@ onUnmounted(() => {
       </template>
 
       <!-- Trees -->
-      <template v-for="n in 8" :key="'tree-'+n">
+      <template v-for="n in 12" :key="'tree-'+n">
         <div
           class="absolute text-4xl opacity-40 pointer-events-none"
           :style="{ bottom: '130px', left: (n * 400 + 80) + 'px' }"
@@ -617,7 +691,7 @@ onUnmounted(() => {
       </template>
 
       <!-- Floating hearts -->
-      <template v-for="n in 6" :key="'heart-'+n">
+      <template v-for="n in 10" :key="'heart-'+n">
         <div
           class="absolute text-2xl opacity-20 animate-float pointer-events-none"
           :style="{ top: (80 + n * 40) + 'px', left: (n * 480 + 200) + 'px', animationDelay: (n * 0.7) + 's' }"
@@ -727,7 +801,7 @@ onUnmounted(() => {
         <template v-for="(s, i) in steps" :key="'prog-'+i">
           <div
             class="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold transition-all duration-500"
-            :class="clearedObstacles.includes(i) ? 'bg-pink-500 text-white scale-110' : i === currentCheckpoint && (gameState === 'QUIZ' || gameState === 'DIALOGUE_AZRA' || gameState === 'DIALOGUE_BIRD') ? 'bg-pink-300 text-pink-700 ring-2 ring-pink-400' : 'bg-pink-100 text-pink-300'"
+            :class="clearedObstacles.includes(i) ? 'bg-pink-500 text-white scale-110' : i === currentCheckpoint && (gameState === 'QUIZ' || gameState === 'CHOICE' || gameState === 'DIALOGUE_AZRA' || gameState === 'DIALOGUE_BIRD') ? 'bg-pink-300 text-pink-700 ring-2 ring-pink-400' : 'bg-pink-100 text-pink-300'"
           >
             <span v-if="clearedObstacles.includes(i)">✓</span>
             <span v-else>{{ i + 1 }}</span>
@@ -813,11 +887,11 @@ onUnmounted(() => {
     <!-- ─── INTRO POPUP (after pressing Kreni) ─── -->
     <div
       v-if="gameState === 'INTRO_POPUP'"
-      class="absolute inset-0 z-40 flex items-end justify-center cursor-pointer"
+      class="absolute inset-0 z-40 flex items-center justify-center cursor-pointer"
       style="background: rgba(253,242,248,0.3);"
       @click="dismissIntroPopup"
     >
-      <div class="mb-32 sm:mb-40 animate-slide-in">
+      <div class="mt-20 sm:mt-24 animate-slide-in">
         <div class="bg-white rounded-2xl px-5 py-3 shadow-xl border-2 border-pink-200 text-center max-w-[340px]">
           <p class="text-pink-700 font-bold text-sm">Gdje sam ja ovo? Moram naći Ahmeda! 😟</p>
         </div>
@@ -851,25 +925,25 @@ onUnmounted(() => {
     </div>
 
     <!-- ─── QUIZ OVERLAY ─── -->
-    <div v-if="gameState === 'QUIZ'" class="absolute inset-0 z-40 flex items-end sm:items-center justify-center p-4" style="background: rgba(0,0,0,0.35);">
-      <div class="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-md animate-slide-in mb-4 sm:mb-0">
-        <div class="flex items-center gap-3 mb-4">
-          <div class="text-5xl">🦜<span v-if="isLastQuestion">🦜</span></div>
+    <div v-if="gameState === 'QUIZ'" class="absolute inset-0 z-40 flex items-end sm:items-center justify-center p-3 sm:p-4" style="background: rgba(0,0,0,0.35);">
+      <div class="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 w-full max-w-md animate-slide-in mb-2 sm:mb-0">
+        <div class="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+          <div class="text-3xl sm:text-5xl">🦜<span v-if="isLastQuestion">🦜</span></div>
           <div>
-            <p class="text-green-600 text-sm font-medium">{{ isLastQuestion ? 'Čombe i Lili te pitaju...' : currentParrot + ' te pita...' }}</p>
-            <h2 class="text-xl font-bold text-pink-700">{{ step.question }}</h2>
+            <p class="text-green-600 text-xs sm:text-sm font-medium">{{ isLastQuestion ? 'Čombe i Lili te pitaju...' : currentParrot + ' te pita...' }}</p>
+            <h2 class="text-base sm:text-xl font-bold text-pink-700">{{ step.question }}</h2>
           </div>
         </div>
         <!-- Wrong answer popup -->
-        <div v-if="wrongPopup" class="mb-3 bg-red-50 border border-red-200 rounded-xl px-4 py-2 text-red-600 text-sm text-center animate-slide-in">
+        <div v-if="wrongPopup" class="mb-2 sm:mb-3 bg-red-50 border border-red-200 rounded-xl px-3 py-1.5 sm:px-4 sm:py-2 text-red-600 text-xs sm:text-sm text-center animate-slide-in">
           {{ step.wrongMessage }}
         </div>
-        <div class="grid gap-2.5">
+        <div class="grid gap-2 sm:gap-2.5">
           <button
             v-for="(option, i) in step.options"
             :key="i"
             @click="selectAnswer(i)"
-            class="w-full py-3 px-5 rounded-xl text-left font-semibold transition-all duration-200"
+            class="w-full py-2 px-3 sm:py-3 sm:px-5 rounded-xl text-left text-sm sm:text-base font-semibold transition-all duration-200"
             :class="[
               wrongIndex === i
                 ? 'bg-red-50 text-red-500 border-2 border-red-300 animate-shake'
@@ -882,23 +956,56 @@ onUnmounted(() => {
       </div>
     </div>
 
+    <!-- ─── CHOICE OVERLAY ─── -->
+    <div v-if="gameState === 'CHOICE'" class="absolute inset-0 z-40 flex items-end sm:items-center justify-center p-3 sm:p-4" style="background: rgba(0,0,0,0.35);">
+      <div class="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 w-full max-w-md animate-slide-in mb-2 sm:mb-0" style="border: 2px solid #c084fc;">
+        <div class="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+          <div class="text-3xl sm:text-5xl">🦜</div>
+          <div>
+            <p class="text-purple-500 text-xs sm:text-sm font-medium">Nema pogrešnog odgovora!</p>
+            <h2 class="text-base sm:text-xl font-bold text-purple-700">{{ step.question }}</h2>
+          </div>
+        </div>
+        <div :class="step.options.length > 4 ? 'grid grid-cols-2 gap-1.5 sm:gap-2.5' : 'grid gap-2 sm:gap-2.5'">
+          <button
+            v-for="(option, i) in step.options"
+            :key="i"
+            @click="selectChoice(i)"
+            class="w-full py-2 px-3 sm:py-3 sm:px-5 rounded-xl text-left text-sm sm:text-base font-semibold transition-all duration-200 bg-purple-50 text-purple-600 border-2 border-purple-200 hover:border-purple-400 hover:bg-purple-100 active:scale-[0.98]"
+          >
+            {{ option }}
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- ─── MEMORY OVERLAY ─── -->
-    <div v-if="gameState === 'MEMORY'" class="absolute inset-0 z-40 flex items-end sm:items-center justify-center p-4" style="background: rgba(0,0,0,0.35);">
-      <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md animate-slide-in overflow-hidden mb-4 sm:mb-0">
-        <div class="text-center pt-5 pb-2">
-          <span class="text-2xl font-bold text-pink-500">Tačno! ✨</span>
+    <div v-if="gameState === 'MEMORY'" class="absolute inset-0 z-40 flex items-end sm:items-center justify-center p-3 sm:p-4" style="background: rgba(0,0,0,0.35);">
+      <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md animate-slide-in overflow-hidden mb-2 sm:mb-0">
+        <div class="text-center pt-3 sm:pt-5 pb-1 sm:pb-2">
+          <span v-if="step.type === 'choice'" class="text-xl sm:text-2xl font-bold text-purple-500">
+            {{ choiceResponse }} 💬
+          </span>
+          <span v-else class="text-xl sm:text-2xl font-bold text-pink-500">Tačno! ✨</span>
         </div>
         <img
           :src="step.imagePath"
           :alt="'Uspomena ' + (currentCheckpoint + 1)"
-          class="w-full max-h-64 object-contain bg-pink-50"
+          class="w-full max-h-48 sm:max-h-64 object-contain bg-pink-50"
           @error="(e) => e.target.style.display = 'none'"
         />
-        <div class="p-5">
-          <p class="text-pink-700 text-lg leading-relaxed mb-5">{{ step.message }}</p>
+        <div class="p-3 sm:p-5">
+          <!-- Laughing parrots for funny scene -->
+          <div v-if="step.funnyScene" class="flex justify-center gap-3 mb-3">
+            <span class="text-5xl animate-bounce" style="animation-duration: 0.6s;">🦜</span>
+            <span class="text-4xl animate-bounce" style="animation-delay: 0.1s; animation-duration: 0.5s;">😂</span>
+            <span class="text-5xl animate-bounce" style="animation-delay: 0.2s; animation-duration: 0.6s; display: inline-block; transform: scaleX(-1);">🦜</span>
+          </div>
+          <p :class="step.type === 'choice' ? 'text-purple-700' : 'text-pink-700'" class="text-sm sm:text-lg leading-relaxed mb-3 sm:mb-5">{{ step.message }}</p>
           <button
             @click="continueRunning"
-            class="w-full bg-pink-500 hover:bg-pink-600 text-white font-bold py-3 rounded-xl text-lg shadow-lg transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
+            class="w-full text-white font-bold py-2.5 sm:py-3 rounded-xl text-base sm:text-lg shadow-lg transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
+            :class="step.type === 'choice' ? 'bg-purple-500 hover:bg-purple-600' : 'bg-pink-500 hover:bg-pink-600'"
           >
             Trči dalje! 🏃‍♀️
           </button>
