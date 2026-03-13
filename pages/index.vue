@@ -119,6 +119,7 @@ const obstaclePositions = steps.map((_, i) => FIRST_OBSTACLE + OBSTACLE_SPACING 
 // ── State ──────────────────────────────────────────────────
 const gameState = ref('START') // START | PLAYING | DIALOGUE_AZRA | DIALOGUE_BIRD | QUIZ | CHOICE | MEMORY | PRE_FINAL | FINAL | WORD_PUZZLE | WORD_PUZZLE_WIN
 const choiceResponse = ref(null) // stores chosen option text for choice steps
+const imageZoomed = ref(false)
 const currentCheckpoint = ref(0)
 const azraX = ref(80)
 const cameraX = ref(0)
@@ -487,6 +488,7 @@ function getParrotBubbleText() {
 }
 
 function continueRunning() {
+  imageZoomed.value = false
   collidedObstacle.value = -1
   parrotVisible.value = false
   parrot2Visible.value = false
@@ -797,19 +799,19 @@ onUnmounted(() => {
 
     <!-- ─── HUD: Progress (top) ─── -->
     <div v-if="gameState !== 'START' && gameState !== 'INTRO_POPUP'" class="absolute top-3 left-1/2 -translate-x-1/2 z-30 animate-fade-in">
-      <div class="flex items-center gap-1.5 bg-white/80 backdrop-blur-sm rounded-full px-3 py-1.5 shadow-lg">
+      <div class="flex items-center gap-0.5 sm:gap-1.5 bg-white/80 backdrop-blur-sm rounded-full px-2 sm:px-3 py-1 sm:py-1.5 shadow-lg">
         <template v-for="(s, i) in steps" :key="'prog-'+i">
           <div
-            class="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold transition-all duration-500"
+            class="w-5 h-5 sm:w-6 sm:h-6 rounded-full flex items-center justify-center text-[8px] sm:text-[10px] font-bold transition-all duration-500"
             :class="clearedObstacles.includes(i) ? 'bg-pink-500 text-white scale-110' : i === currentCheckpoint && (gameState === 'QUIZ' || gameState === 'CHOICE' || gameState === 'DIALOGUE_AZRA' || gameState === 'DIALOGUE_BIRD') ? 'bg-pink-300 text-pink-700 ring-2 ring-pink-400' : 'bg-pink-100 text-pink-300'"
           >
             <span v-if="clearedObstacles.includes(i)">✓</span>
             <span v-else>{{ i + 1 }}</span>
           </div>
-          <div v-if="i < steps.length - 1" class="w-3 h-0.5" :class="clearedObstacles.includes(i) ? 'bg-pink-500' : 'bg-pink-200'"></div>
+          <div v-if="i < steps.length - 1" class="w-1.5 sm:w-3 h-0.5" :class="clearedObstacles.includes(i) ? 'bg-pink-500' : 'bg-pink-200'"></div>
         </template>
-        <div class="w-3 h-0.5" :class="gameState === 'FINAL' ? 'bg-pink-500' : 'bg-pink-200'"></div>
-        <div class="text-sm">💕</div>
+        <div class="w-1.5 sm:w-3 h-0.5" :class="gameState === 'FINAL' ? 'bg-pink-500' : 'bg-pink-200'"></div>
+        <div class="text-xs sm:text-sm">💕</div>
       </div>
     </div>
 
@@ -991,7 +993,8 @@ onUnmounted(() => {
         <img
           :src="step.imagePath"
           :alt="'Uspomena ' + (currentCheckpoint + 1)"
-          class="w-full max-h-48 sm:max-h-64 object-contain bg-pink-50"
+          class="w-full max-h-48 sm:max-h-64 object-contain bg-pink-50 cursor-zoom-in active:opacity-80 transition-opacity"
+          @click="imageZoomed = true"
           @error="(e) => e.target.style.display = 'none'"
         />
         <div class="p-3 sm:p-5">
@@ -1011,6 +1014,21 @@ onUnmounted(() => {
           </button>
         </div>
       </div>
+    </div>
+
+    <!-- ─── IMAGE ZOOM OVERLAY ─── -->
+    <div
+      v-if="imageZoomed && gameState === 'MEMORY'"
+      class="absolute inset-0 z-50 flex items-center justify-center cursor-zoom-out p-4"
+      style="background: rgba(0,0,0,0.85);"
+      @click="imageZoomed = false"
+    >
+      <img
+        :src="step.imagePath"
+        :alt="'Uspomena ' + (currentCheckpoint + 1)"
+        class="max-w-full max-h-full object-contain rounded-xl animate-fade-in"
+      />
+      <div class="absolute top-4 right-4 text-white/60 text-xs">dodirni za zatvoriti</div>
     </div>
 
     <!-- ─── PRE-FINAL OVERLAY (tap to continue) ─── -->
